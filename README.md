@@ -1,4 +1,4 @@
-# Real-time capture of a Chat transcript with Stream Chat
+# Syncing Sales Chat Transcripts in Real-Time with Zendesk Sell CRM and Stream Chat
 Can you imagine improving a chat experience in real-time during a chat experience? Would your chat applications be improved with more timely handling of customer chat inquiries? This post demonstrates how to leverage the powerful [Stream Chat API](https://getstream.io/chat/docs) to take action with a chat transcript as the transcript is happening, response by response. The techniques provided here will help you better understand key components of the Stream Chat API, so that you can leverage them for similar applications, either with [Zendesk Sell](https://www.zendesk.com/sell/) or other applications.
 
 We show this through the use case of updating a Zendesk CRM Lead in real-time with the transcript messages of a **Customer** and **Sales Admin** during a chat-based sales inquiry.
