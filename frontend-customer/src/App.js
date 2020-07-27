@@ -1,77 +1,38 @@
-import React, { useEffect, useState } from "react";
-import {
-  Channel,
-  Chat,
-  MessageCommerce,
-  MessageInput,
-  MessageInputFlat,
-  MessageList,
-  TypingIndicator,
-  Window
-} from "stream-chat-react";
-import { StreamChat } from "stream-chat";
-import axios from "axios";
+import React, { useState } from "react";
 
-import "stream-chat-react/dist/css/index.css";
+import SalesChat from "./SalesChat";
 
 function Customer() {
-  const [channel, setChannel] = useState(null);
-  const [chatClient, setChatClient] = useState(null);
+  const [username, setUsername] = useState('');
+  const [leadId, setLeadId] = useState('');
+  const [isSalesAdmin, setIsSalesAdmin] = useState(null);
 
-  useEffect(() => {
-    const username = "customer";
-
-    async function getToken() {
-      try {
-        const response = await axios.post("http://localhost:7000/join", {
-          username
-        });
-        const token = response.data.token;
-        const channelId = response.data.channelId;
-        const chatClient = new StreamChat(response.data.api_key);
-
-        await chatClient.setUser(
-          {
-            id: username,
-            name: "Customer"
-          },
-          token
-        );
-
-        const channel = chatClient.channel("messaging", channelId);
-
-        setChannel(channel);
-        setChatClient(chatClient);
-      } catch (err) {
-        console.error(err);
-        return <div>{err}</div>;
-      }
-    }
-
-    getToken();
-  }, []);
-
-  async function handleMessage(channelId, message) {
-    await axios.put("http://localhost:7000/updateDesc", { message, author: 'Customer' });
-    return channel.sendMessage(message);
+  if (username && isSalesAdmin !== null) {
+    return <SalesChat username={username} leadId={leadId} isSalesAdmin={isSalesAdmin}/>;
+  } else {
+    return <div className="login">
+      <div className="login-description">
+        Type in a username to chat with. If you'd like to view the sales admin side of the chat be sure to hit the 'Login
+        as Sales Admin' button.
+      </div>
+      <label>Customer Username</label>
+      <input
+        type="text"
+        value={username}
+        onChange={(e) => setUsername(e.target.value)}
+        required
+      />
+      <label>Zendesk Lead ID</label>
+      <input
+        type="text"
+        value={leadId}
+        onChange={(e) => setLeadId(e.target.value)}
+        required
+      />
+      <button onClick={() => setIsSalesAdmin(false)}>Login as Customer</button>
+      <button onClick={() => setIsSalesAdmin(true)}>Login as Sales Admin</button>
+    </div>
   }
-
-  return (
-    <Chat client={chatClient} theme="commerce light">
-      <Channel channel={channel} doSendMessageRequest={handleMessage}>
-        <Window>
-          <div>
-            Customer Support Chat: Customer View
-          </div>
-          <MessageList
-            typingIndicator={TypingIndicator}
-            Message={MessageCommerce}
-          />
-          <MessageInput Input={MessageInputFlat} focus/>
-        </Window>
-      </Channel>
-    </Chat>
-  );
 }
 
 export default Customer;
