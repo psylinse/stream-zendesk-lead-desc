@@ -87,6 +87,6 @@ app.post("/stream-chat-credentials", async (req, res) => {
   }
 });
 
-app.listen(7000, () => {
-  console.log('Server running on PORT 7000');
+app.listen(process.env.PORT, () => {
+  console.log(`Server running on PORT ${process.env.PORT}`);
 });

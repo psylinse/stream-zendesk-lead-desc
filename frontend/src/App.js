@@ -7,7 +7,7 @@ function Customer() {
   const [leadId, setLeadId] = useState('');
   const [isSalesAdmin, setIsSalesAdmin] = useState(null);
 
-  if (username && isSalesAdmin !== null) {
+  if (username && leadId && isSalesAdmin !== null) {
     return <SalesChat username={username} leadId={leadId} isSalesAdmin={isSalesAdmin}/>;
   } else {
     return <div className="login">
