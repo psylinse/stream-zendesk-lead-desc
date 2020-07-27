@@ -32,7 +32,6 @@ async function getPreviousTranscript(leadId) {
 
 app.put('/transcript', async (req, res) => {
   try {
-    console.log('body', req.body);
     const leadId = req.body.leadId;
     let previousTranscript = await getPreviousTranscript(leadId);
     const payload = {
