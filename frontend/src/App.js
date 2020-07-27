@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 import SalesChat from "./SalesChat";
 
-function Customer() {
+function App() {
   const [username, setUsername] = useState('');
   const [leadId, setLeadId] = useState('');
   const [isSalesAdmin, setIsSalesAdmin] = useState(null);
@@ -35,4 +35,4 @@ function Customer() {
   }
 }
 
-export default Customer;
+export default App;
