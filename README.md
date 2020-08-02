@@ -135,9 +135,51 @@ To keep this post focused, we won't generate leads dynamically. This means we'll
 
 Once you've filled out your `username` and `leadId`, after you select logging in as a **Customer** or **Sales Admin**, the application will render the `SalesChat` component. 
 
-> Note: there are several methodologies for creating multiple user experiences for a front-end React app. While the method used here is convenient for learning, it's obviously not what you'd want in production as there's no real authentication or user management. Choose what's best for your needs on this step.
+> Note: there are several methodologies for managing users with different authentication levels. While the method used here is convenient for learning, it's obviously not what you'd want in production as there's no real authentication or user management. Choose what's best for your needs on this step.
 
 ## Step 2: Configuring and Displaying a Stream Chat Channel
+
+As you can see in Step 1, once we have the data we need we mount the `SalesChat` component. This component gets a Stream frontend token from the backend and mounts the appropriate Stream chat components. Let's take a look at the general outline of the component:
+
+```jsx
+function SalesChat({ username, leadId, isSalesAdmin }) {
+  const [channel, setChannel] = useState(null);
+  const [chatClient, setChatClient] = useState(null);
+
+  useEffect(() => {
+    async function getToken() {
+      try {
+        const response = await axios.post("http://localhost:7000/stream-chat-credentials", {
+          username, leadId, isSalesAdmin
+        });
+        const token = response.data.token;
+        const channelId = response.data.channelId;
+        const chatClient = new StreamChat(response.data.apiKey);
+
+        await chatClient.setUser({ id: response.data.userId, name: response.data.userName }, token);
+        const channel = chatClient.channel("messaging", channelId);
+
+        setChatClient(chatClient);
+        setChannel(channel);
+      } catch (err) {
+        console.error(err);
+        return <div>{err}</div>;
+      }
+    }
+
+    getToken();
+  }, []);
+
+  async function handleMessage(channelId, message) {
+    // ...
+  }
+
+  return // ...
+}
+```
+
+Here we take in the username, the lead id for that user, and a boolean `isSalesAdmin` to indicate which side of the chat we're on. On initialization, we    
+
 
 ## Step 3: Syncing the Chat Transcript on Every Message
 

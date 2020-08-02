@@ -27,7 +27,7 @@ async function getPreviousTranscript(leadId) {
     `https://api.getbase.com/v2/leads/${leadId}`,
     { headers: headers }
   );
-  return response.data.data.description;
+  return response.data.data.description || '';
 }
 
 app.put('/transcript', async (req, res) => {
@@ -57,12 +57,7 @@ app.put('/transcript', async (req, res) => {
 app.post("/stream-chat-credentials", async (req, res) => {
   const { username, isSalesAdmin } = req.body;
   try {
-    let user;
-    if (isSalesAdmin) {
-      user = { id: 'sales-admin', name: 'Sales Admin', role: 'admin' };
-    } else {
-      user = { id: username, name: username, role: 'user' };
-    }
+    let user = { id: username, name: username, role: 'user' };
 
     await streamClient.upsertUsers([user]);
     const channel = streamClient.channel('messaging', username, {
