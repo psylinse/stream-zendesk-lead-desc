@@ -18,7 +18,7 @@ The `frontend` is bootstrapped using `create-react-app`, and the backend server 
 
 To follow along with the post, you will need a free [Stream](https://getstream.io/get_started) account, and a Zendesk Sell account (a Zendesk Trial can be obtained [here](https://www.zendesk.com/register/?source=zendesk_sell#step-1)).
 
-The code in this post is intended to run locally, and assumes a basic knowledge of [React and React Hooks](https://reactjs.org/docs/hooks-intro.html), [Express](https://expressjs.com/), [Node.js](https://nodejs.org/en/), and [axios](https://github.com/axios/axios). The minimum knowledge required to configure Zendesk and use the API is explained in the post (see the [Zendesk Sell API](https://developer.zendesk.com/rest_api/docs/sell-api/apis) documentation to learn more). Please note, however, that you will need to create at least one Lead manually in Zendesk and and use the Lead ID when logging in, as described below.
+The code in this post is intended to run locally and assumes a basic knowledge of [React and React Hooks](https://reactjs.org/docs/hooks-intro.html), [Express](https://expressjs.com/), [Node.js](https://nodejs.org/en/), and [axios](https://github.com/axios/axios). The minimum knowledge required to configure Zendesk and use the API is explained in the post (see the [Zendesk Sell API](https://developer.zendesk.com/rest_api/docs/sell-api/apis) documentation to learn more). Please note, however, that you will need to create at least one Lead manually in Zendesk and use the Lead ID when logging in, as described below.
 
 The steps we will take to build the `backend` are:
 1. Registering and Configuring Zendesk
@@ -87,7 +87,7 @@ When the `.env` file has been created, you can start the backend by `npm start` 
 
 ## Step 1 - Starting a Chat
 
-First let's build a React frontend that allows you to start a chat as a **Customer** or **Sales Admin**. Here's what our simplified logins screen looks like. 
+First, let's build a React frontend that allows you to start a chat as a **Customer** or **Sales Admin**. Here's what our simplified logins screen looks like. 
 
 ![](images/login.png)
 
@@ -155,7 +155,7 @@ Once you've filled out your `username` and `leadId`, after you can click "Start 
   }
 ``` 
 
-Here we post our `username` and `leadId` to our backend. We'll look at what our backend does in a second, but first let's see how our `frontend` handles the response. Our backend will return a few pieces of data required to configure our frontend client. Using the `apiKey` we set up our frontend `StreamChat` instance. We then configure the chat instance with the `userId`, `userName` and the [Stream frontend token](https://getstream.io/blog/integrating-with-stream-backend-frontend-options/). Once our client is configured, we can create a reference to our channel via the `channelId`. We then set the React component's `chatClient` and `channel` state. 
+Here we post our `username` and `leadId` to our backend. We'll look at what our backend does in a second, but first, let's see how our `frontend` handles the response. Our backend will return a few pieces of data required to configure our frontend client. Using the `apiKey` we set up our frontend `StreamChat` instance. We then configure the chat instance with the `userId`, `userName`, and the [Stream frontend token](https://getstream.io/blog/integrating-with-stream-backend-frontend-options/). Once our client is configured, we can create a reference to our channel via the `channelId`. We then set the React component's `chatClient` and `channel` state. 
 
 Before we move on to rendering the chat channel, let's look at the backend `/stream-chat-credentials` handler: 
 
@@ -198,7 +198,7 @@ app.post("/stream-chat-credentials", async (req, res) => {
 });
 ```
 
-Here we take the `username` from the request. We use our `streamClient` to create or update the user. Then we create a chat channel that is private to that user (and any [admin user](https://getstream.io/chat/docs/channel_user_role/?language=js)). Once the chat channel is set up, we generate teh user's frontend token and respond to the user with the necessary data.
+Here we take the `username` from the request. We use our `streamClient` to create or update the user. Then we create a chat channel that is private to that user (and any [admin user](https://getstream.io/chat/docs/channel_user_role/?language=js)). Once the chat channel is set up, we generate the user's frontend token and respond to the user with the necessary data.
 
 ## Step 2: Displaying a Stream Chat Channel
 
