@@ -30,7 +30,7 @@ async function getPreviousTranscript(leadId) {
   return response.data.data.description || '';
 }
 
-app.put('/transcript', async (req, res) => {
+app.post('/messages', async (req, res) => {
   try {
     const leadId = req.body.leadId;
     let previousTranscript = await getPreviousTranscript(leadId);
@@ -55,7 +55,7 @@ app.put('/transcript', async (req, res) => {
 });
 
 app.post("/stream-chat-credentials", async (req, res) => {
-  const { username, isSalesAdmin } = req.body;
+  const { username } = req.body;
   try {
     let user = { id: username, name: username, role: 'user' };
 

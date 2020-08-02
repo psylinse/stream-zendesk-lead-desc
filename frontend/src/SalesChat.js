@@ -6,7 +6,7 @@ import "stream-chat-react/dist/css/index.css";
 
 function SalesChat({ username, leadId, chatClient, channel }) {
   async function handleMessage(_channelId, message) {
-    await axios.put("http://localhost:8080/transcript", { message, author: username, leadId: leadId });
+    await axios.post("http://localhost:8080/messages", { message, author: username, leadId: leadId });
     return channel.sendMessage(message);
   }
 
