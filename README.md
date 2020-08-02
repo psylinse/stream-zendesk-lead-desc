@@ -1,18 +1,18 @@
 # Syncing Sales Chat Transcripts in Real-Time with Zendesk Sell CRM and Stream Chat
 Can you imagine improving a chat experience in real-time during a chat experience? Would your chat applications be improved with more timely handling of customer chat inquiries? This post demonstrates how to leverage the powerful [Stream Chat API](https://getstream.io/chat/docs) to take action with a chat transcript as the transcript is happening, response by response. The techniques provided here will help you better understand key components of the Stream Chat API, so that you can leverage them for similar applications, either with [Zendesk Sell](https://www.zendesk.com/sell/) or other applications.
 
-We show this through the use case of updating a Zendesk CRM Lead in real-time with the transcript messages of a **Customer** and **Sales Admin** during a chat-based sales inquiry.
+We show this through the use case of updating a Zendesk CRM Lead in real-time with the transcript messages of a **Customer**.
 
-The simplified process of this post assumes that a customer has already initiated a chat inquiry with customer support, so it provides two browser tabs, an endpoint for the **Sales Admin**, and an endpoint for a **Customer**. Both the admin and customer chat screens pass the chat message to a `backend` API, which is the focus of this post. The `backend` calls the Zendesk Sell API to update the desired **Lead Description**. You will see that the Zendesk lead description is updated after either of the two chat screens send a message. The flow is illustrated below.
+The simplified process of this post simply simulates a customer starting a sales chat. The customer chat screens pass the chat message to a `backend` API, which is the focus of this post. The `backend` calls the Zendesk Sell API to update the desired **Lead Description**. You will see that the Zendesk lead description is updated after the customer send a message. The flow is illustrated below.
 
 ![](images/stream-to-zendesk-flow.png)
 
 ## Technical Overview
 The applications described in this post are composed of:
-* `frontend` which runs on http://localhost:3000/. This application supports both the customer and sales admin.
+* `frontend` which runs on http://localhost:3000/. This application supports the customer experience.
 * `backend` which runs on http://localhost:8080/. This application will facilitate communication with Stream and Zendesk.
 
-The `frontend` is bootstrapped using `create-react-app`, and the backend server is an `Express` app running on `nodejs`. Both the `frontend` and `backend` leverage Stream's [JavaScript library](https://github.com/GetStream/stream-js). The backend employs [axios](https://github.com/axios/axios) to PUT an update via the Zendesk Sell API to the Description of an existing Zendesk Lead. All the code required for this tutorial is available in the [GitHub repository](https://github.com/psylinse/stream-zendesk-lead-desc).
+The `frontend` is bootstrapped using `create-react-app`, and the backend server is an `Express` app running on `nodejs`. Both the `frontend` and `backend` leverage Stream's [JavaScript library](https://github.com/GetStream/stream-js). The backend employs [axios](https://github.com/axios/axios) interact with the Zendesk Sell API. All the code required for this tutorial is available in the [GitHub repository](https://github.com/psylinse/stream-zendesk-lead-desc).
 
 ## Prerequisites
 
@@ -87,7 +87,7 @@ When the `.env` file has been created, you can start the backend by `npm start` 
 
 ## Step 1 - Starting a Chat
 
-First, let's build a React frontend that allows you to start a chat as a **Customer** or **Sales Admin**. Here's what our simplified logins screen looks like. 
+First, let's build a React frontend that allows you to start a chat as a **Customer**. Here's what our simplified logins screen looks like. 
 
 ![](images/login.png)
 
