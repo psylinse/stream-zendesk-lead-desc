@@ -1,11 +1,13 @@
 # Syncing Sales Chat Transcripts in Real-Time with Zendesk Sell CRM and Stream Chat
-Can you imagine improving a chat experience in real-time during a chat experience? Would your chat applications be improved with more timely handling of customer chat inquiries? This post demonstrates how to leverage the powerful [Stream Chat API](https://getstream.io/chat/docs) to take action with a chat transcript as the transcript is happening, response by response. The techniques provided here will help you better understand key components of the Stream Chat API, so that you can leverage them for similar applications, either with [Zendesk Sell](https://www.zendesk.com/sell/) or other applications.
+Can you imagine viewing your sales chat transcripts in real time from your sales CRM? Would your chat applications improve with more timely handling of customer chat inquiries? This post demonstrates how to leverage the powerful [Stream Chat API](https://getstream.io/chat/docs) to take action with a chat transcript as the transcript is happening, response by response. The techniques provided here will help you better understand key components of the Stream Chat API, so that you can leverage them for similar applications, either with [Zendesk Sell](https://www.zendesk.com/sell/) or other CRMs.
 
-We show this through the use case of updating a Zendesk CRM Lead in real-time with the transcript messages of a **Customer**.
+We show this through the use case of updating a Zendesk Sell Lead in real-time with the transcript messages of a **Customer**.
 
-The simplified process of this post simply simulates a customer starting a sales chat. The customer chat screens pass the chat message to a `backend` API, which is the focus of this post. The `backend` calls the Zendesk Sell API to update the desired **Lead Description**. You will see that the Zendesk lead description is updated after the customer send a message. The flow is illustrated below.
+The simplified process of this post simply simulates a customer starting a sales chat. The customer chat components pass the chat message to a `backend` API, which is the focus of this post. The `backend` calls the Zendesk Sell API to update the desired **Lead Description**. You will see that the Zendesk lead description is updated after the customer send a message. The flow is illustrated below.
 
 ![](images/stream-to-zendesk-flow.png)
+
+> Note: we only focus on the **Customer** experience in this post. Similar steps can be taken to sync the admin messages.
 
 ## Technical Overview
 The applications described in this post are composed of:
@@ -20,16 +22,22 @@ To follow along with the post, you will need a free [Stream](https://getstream.i
 
 The code in this post is intended to run locally and assumes a basic knowledge of [React and React Hooks](https://reactjs.org/docs/hooks-intro.html), [Express](https://expressjs.com/), [Node.js](https://nodejs.org/en/), and [axios](https://github.com/axios/axios). The minimum knowledge required to configure Zendesk and use the API is explained in the post (see the [Zendesk Sell API](https://developer.zendesk.com/rest_api/docs/sell-api/apis) documentation to learn more). Please note, however, that you will need to create at least one Lead manually in Zendesk and use the Lead ID when logging in, as described below.
 
-The steps we will take to build the `backend` are:
-1. Registering and Configuring Zendesk
-1. Registering and Configuring Stream
-1. Create a Stream Chat Session
 
-The steps to build the `frontend` are:
-1. Initiate the Frontend Chat Screens
-1. Authenticate the Customer to the Chat
-1. Send messages to Zendesk
-1. Miscellaneous Backend Endpoints
+## Configuration
+
+This application requires three environment variables to be configured:
+
+- STREAM_API_KEY
+- STREAM_API_SECRET
+- ZENDESK_CRM_TOKEN
+
+You will find a file in the `backend` folder, `.env.example`, that you can rename to create a `.env` file.
+
+When the `.env` file has been created and configured, you can start the backend by `npm start` command from the backend folder.
+
+Before we do anything we start anything we need to create and configure our accounts. 
+
+Let's get started!
 
 ### Registering and Configuring Zendesk
 
@@ -55,19 +63,11 @@ To integrate Stream with the Zendesk Sell API, you must configure the OAuth secu
 
 ![](images/zendesk-access-token-example.png)
 
-You will update the backend with this Zendesk OAuth Token as explained in the next section.
+Update you're `.env` file with the token you just generated.
 
 ### Registering and Configuring Stream
 
-This application uses three environment variables:
-
-- STREAM_API_KEY
-- STREAM_API_SECRET
-- ZENDESK_CRM_TOKEN
-
-You will find a file in the Backend folder, `.env.example`, that you can rename to create a `.env` file.
-
-To get the Stream credentials, navigate to your [Stream.io Dashboard](https://getstream.io/dashboard/)
+Now we can configure Stream. To get the Stream credentials, navigate to your [Stream.io Dashboard](https://getstream.io/dashboard/)
 
 ![](images/stream-dashboard-button.png)
 
@@ -82,8 +82,6 @@ Give your app a name and select "Development" and click "Submit"
 Stream will generate a `key` and `secret` for your app. Copy these and update the corresponding environment variables in the `.env` file.
 
 ![](images/stream-key-secret-copy.png)
-
-When the `.env` file has been created, you can start the backend by `npm start` command from the backend folder.
 
 ## Step 1 - Starting a Chat
 
@@ -236,7 +234,7 @@ Using the `chatClient` and `channel` we render the chat experience with [Stream'
 
 ## Step 3: Syncing the Chat Transcript on Every Message
 
-Now that we have our chat experience mounted and are sending every message to our backend, we can sync these messages to our Zendesk Lead. Here's our `/messages` endpoint: 
+Now that we have our chat experience mounted and are sending every message to our `backend`, we can sync these messages to our Zendesk Lead. Here's our `/messages` endpoint: 
 
 ```javascript
 // backend/server.js:33
