@@ -1,26 +1,28 @@
 # Syncing Sales Chat Transcripts in Real-Time with Zendesk Sell CRM and Stream Chat
-Can you imagine viewing your sales chat transcripts in real time from your sales CRM? Would your chat applications improve with more timely handling of customer chat inquiries? This post demonstrates how to leverage the powerful [Stream Chat API](https://getstream.io/chat/docs) to take action with a chat transcript as the transcript is happening, response by response. The techniques provided here will help you better understand key components of the Stream Chat API, so that you can leverage them for similar applications, either with [Zendesk Sell](https://www.zendesk.com/sell/) or other CRMs.
+
+Can you imagine viewing your sales chat transcripts in real time from your sales CRM? Would your chat applications improve with more timely handling of customer chat inquiries? This post demonstrates how to leverage the powerful [Stream Chat API](https://getstream.io/chat/docs) to take action with a chat transcript as the chat takes place, response by response. The techniques provided here will help you better understand key components of the Stream Chat API, so that you can leverage them for similar applications, either with [Zendesk Sell](https://www.zendesk.com/sell/) or other CRMs.
 
 We show this through the use case of updating a Zendesk Sell Lead in real-time with the transcript messages of a **Customer**.
 
-The simplified process of this post simply simulates a customer starting a sales chat. The customer chat components pass the chat message to a `backend` API, which is the focus of this post. The `backend` calls the Zendesk Sell API to update the desired **Lead Description**. You will see that the Zendesk lead description is updated after the customer send a message. The flow is illustrated below.
+The simplified process of this post simulates a customer starting a sales chat. The customer chat components pass the chat message to a `backend` API, which is the focus of this post. The `backend` calls the Zendesk Sell API to update the desired **Lead Description**. You will see that the Zendesk lead description is updated after the customer sends a message. The flow is illustrated below.
 
 ![](images/stream-to-zendesk-flow.png)
 
 > Note: we only focus on the **Customer** experience in this post. Similar steps can be taken to sync the admin messages.
 
 ## Technical Overview
+
 The applications described in this post are composed of:
 * `frontend` which runs on http://localhost:3000/. This application supports the customer experience.
 * `backend` which runs on http://localhost:8080/. This application will facilitate communication with Stream and Zendesk.
 
-The `frontend` is bootstrapped using `create-react-app`, and the backend server is an `Express` app running on `nodejs`. Both the `frontend` and `backend` leverage Stream's [JavaScript library](https://github.com/GetStream/stream-js). The backend employs [axios](https://github.com/axios/axios) interact with the Zendesk Sell API. All the code required for this tutorial is available in the [GitHub repository](https://github.com/psylinse/stream-zendesk-lead-desc).
+The `frontend` is bootstrapped using `create-react-app`, and the backend server is an `Express` app running on `nodejs`. Both the `frontend` and `backend` leverage Stream's [JavaScript library](https://github.com/GetStream/stream-js). The backend employs [axios](https://github.com/axios/axios) to interact with the Zendesk Sell API. All the code required for this tutorial is available in the [GitHub repository](https://github.com/psylinse/stream-zendesk-lead-desc).
 
 ## Prerequisites
 
 To follow along with the post, you will need a free [Stream](https://getstream.io/get_started) account, and a Zendesk Sell account (a Zendesk Trial can be obtained [here](https://www.zendesk.com/register/?source=zendesk_sell#step-1)).
 
-The code in this post is intended to run locally and assumes a basic knowledge of [React and React Hooks](https://reactjs.org/docs/hooks-intro.html), [Express](https://expressjs.com/), [Node.js](https://nodejs.org/en/), and [axios](https://github.com/axios/axios). The minimum knowledge required to configure Zendesk and use the API is explained in the post (see the [Zendesk Sell API](https://developer.zendesk.com/rest_api/docs/sell-api/apis) documentation to learn more). Please note, however, that you will need to create at least one Lead manually in Zendesk and use the Lead ID when logging in, as described below.
+The code in this post is intended to run locally and assumes a basic knowledge of [React and React Hooks](https://reactjs.org/docs/hooks-intro.html), [Express](https://expressjs.com/), [Node.js](https://nodejs.org/en/), and [axios](https://github.com/axios/axios). The basic steps to configure Zendesk and use the API are explained in the post (see the [Zendesk Sell API](https://developer.zendesk.com/rest_api/docs/sell-api/apis) documentation to learn more). Please note, however, that you will need to create at least one Lead manually in Zendesk and use the Lead ID when logging in, as described below. Automatic Lead creation is possible, but is extracurricular to this post. If you want to see how to generate these leads programmatically when entering starting a Stream chat, see this [post](https://getstream.io/blog/how-to-capture-leads-from-live-chat-in-zendesk/).
 
 
 ## Configuration
@@ -130,9 +132,9 @@ function App() {
 }
 ```
 
-We first present the user with the form (displayed above). This form contains a `username`, a `leadId` (to identify the Zendesk Sell lead record), and a button to start the chat. We use `useState` to the values of each of these fields. 
+We first present the user with the form (displayed above). This form contains a `username`, a `leadId` (to identify the Zendesk Sell lead record), and a button to start the chat. We use `useState` to keep track of the values of each of these fields. 
 
-To keep this post focused, we won't generate leads dynamically. This means we'll need to get the lead id from Zendesk manually. To grab our lead id, go to your Zendesk dashboard and navigate to the "Leads" section. If you don't have a lead, click on "Add" and then "Add Lead". Fill in the necessary information then click "Save". Once you've done that you should see a lead id in the URL. It will be a 6-8 digit number such as `3180101`. If you want to see how to generate these leads programmatically when entering starting a Stream chat, see this [post](https://getstream.io/blog/how-to-capture-leads-from-live-chat-in-zendesk/).
+To keep this post focused, we won't generate leads dynamically. This means we'll need to input the lead id from Zendesk manually. To grab our lead id, go to your Zendesk dashboard and navigate to the "Leads" section. If you don't have a lead, click on "Add" and then "Add Lead". Fill in the necessary information then click "Save". Once you've done that you should see a lead id in the URL. It will be a 6-8 digit number such as `3180101`. 
 
 Once you've filled out your `username` and `leadId`, after you can click "Start Sales Chat". Upon clicking this, we fire our `startChat` function:
 
@@ -204,7 +206,7 @@ Once you've started a chat you will see a screen that looks like this:
 
 ![](images/chat.png)
 
-As you can see in Step 1, we have the data we need we mount the `SalesChat` component. This component takes the user information (`username` and `leadId`) and our Stream data (`chatClient` and `channel`). The main function of this component is to render the chat experience and hook into the message lifecycle to send each message to our `backend` to update the Lead in Zendesk Sell. Here's the entire component:
+As you can see in Step 1, we have the data we need to mount the `SalesChat` component. This component takes the user information (`username` and `leadId`) and our Stream data (`chatClient` and `channel`). The process flow of this component is to render the chat experience, hook into the message lifecycle, send each message to our `backend`, then update the Lead in Zendesk Sell. Here's the entire component:
 
 ```jsx
 // frontend/src/SalesChat.js:7
@@ -263,7 +265,7 @@ app.post('/messages', async (req, res) => {
 });
 ```
 
-This endpoint appends the new message to the `description` field, with the author to it. Every time we update the `description` field, it will overwrite the previous data. In order to append to what was there, we need to look up the previous transcript via `getPreviousTranscript`:
+This endpoint appends the new message and author to the `description` field. Every time we update the `description` field, it will overwrite the previous data. Therefore, we need to look up the previous transcript via `getPreviousTranscript`, and append the new message to it:
 
 ```javascript
 // backend/server.js:20
